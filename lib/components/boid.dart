@@ -1,3 +1,4 @@
+import 'dart:math';
 import 'package:alife_app/components/boid_flock.dart';
 import 'package:flame/components.dart';
 import 'package:flutter/painting.dart';
@@ -5,15 +6,17 @@ import 'package:flutter/painting.dart';
 class Boid extends PositionComponent with HasGameRef {
   static const double radius = 5; // ボイドの半径
   Paint paint = Paint()..color = const Color(0xFF00FF00); // ボイドの描画色
-  static const double maxSpeed = 100; // ボイドの最大速度
-  static const double perceptionRadius = 50; // 周囲を感知する半径
-  static const double avoidanceRadius = 20; // 衝突回避の距離
-  static const double alignmentStrength = 1.0; // 整列の影響力
+  static const double Speed = 225; // ボイドの最大速度
+  static const double perceptionRadius = 100; // 周囲を感知する半径
+  static const double avoidanceRadius = 30; // 衝突回避の距離
+  static const double alignmentStrength = 1.5; // 整列の影響力
   static const double cohesionStrength = 1.0; // 結合の影響力
-  static const double separationStrength = 1.5; // 分離の影響力
+  static const double separationStrength = 1.0; // 分離の影響力
+  static const double noiseStrength = 5.0; // ノイズの影響力
 
   Vector2 velocity = Vector2.zero(); // 現在の速度
   BoidFlock? flock; // 群れの参照
+  final Random random = Random(); // 乱数生成器
 
   Boid({Vector2? initialPosition, Vector2? initialVelocity, this.flock}) {
     if (initialPosition != null) position = initialPosition;
@@ -39,13 +42,17 @@ class Boid extends PositionComponent with HasGameRef {
     final cohesion = cohere(nearbyBoids) * cohesionStrength;
     final separation = separate(nearbyBoids) * separationStrength;
 
-    // 力を合成
-    velocity += alignment + cohesion + separation;
+    // ノイズを生成
+    final noise = Vector2(
+      (random.nextDouble() - 0.5) * 2 * noiseStrength,
+      (random.nextDouble() - 0.5) * 2 * noiseStrength,
+    );
 
-    // 最大速度を制限
-    if (velocity.length > maxSpeed) {
-      velocity = velocity.normalized() * maxSpeed;
-    }
+    // 力を合成
+    velocity += alignment + cohesion + separation + noise;
+
+    // 速度を一定に揃える
+    velocity = velocity.normalized() * Speed;
 
     // 位置を更新
     position += velocity * dt;
