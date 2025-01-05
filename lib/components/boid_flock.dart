@@ -4,6 +4,7 @@ import 'dart:math';
 
 class BoidFlock extends Component {
   final List<Boid> boids = []; // 群れの全ボイドを管理
+  final Random random = Random(); // 乱数生成器
 
   /// 群れにボイドを追加
   void addBoid(Boid boid) {
@@ -16,8 +17,8 @@ class BoidFlock extends Component {
   void initializeFlock(int count, Vector2 screenSize) {
     for (int i = 0; i < count; i++) {
       final position = Vector2(
-        Random().nextDouble() * screenSize.x, // 0 〜 画面幅
-        Random().nextDouble() * screenSize.y, // 0 〜 画面高さ
+        random.nextDouble() * screenSize.x, // 0 〜 画面幅
+        random.nextDouble() * screenSize.y, // 0 〜 画面高さ
       );
       final velocity = Vector2.random()..scale(100); // ランダムな速度
       addBoid(Boid(initialPosition: position, initialVelocity: velocity));
