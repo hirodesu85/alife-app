@@ -137,16 +137,9 @@ class Boid extends PositionComponent with HasGameRef {
       const combinedRadius = radius + Enemy.radius;
 
       if (distance < combinedRadius) {
-        // 衝突処理を実行
-        onCollisionWithEnemy(enemy);
+        removeFromParent();
         return; // 一度の衝突で処理を終える
       }
     }
-  }
-
-  void onCollisionWithEnemy(Enemy enemy) {
-    // 衝突時の処理
-    print("Boid collided with an enemy!");
-    removeFromParent(); // ボイドを削除
   }
 }
