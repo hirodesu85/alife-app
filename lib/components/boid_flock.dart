@@ -2,7 +2,7 @@ import 'package:flame/components.dart';
 import 'boid.dart';
 import 'dart:math';
 
-class BoidFlock extends Component {
+class BoidFlock extends Component with HasGameRef {
   final List<Boid> boids = []; // 群れの全ボイドを管理
   final Random random = Random(); // 乱数生成器
 

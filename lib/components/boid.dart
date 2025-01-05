@@ -1,5 +1,7 @@
 import 'dart:math';
 import 'package:alife_app/components/boid_flock.dart';
+import 'package:alife_app/components/enemy.dart';
+import 'package:alife_app/components/enemy_manager.dart';
 import 'package:flame/components.dart';
 import 'package:flutter/painting.dart';
 
@@ -59,6 +61,13 @@ class Boid extends PositionComponent with HasGameRef {
 
     // 画面端で速度を反転させる
     checkCollisionWithWalls();
+
+    // 敵キャラとの衝突判定
+    if (flock?.gameRef.children.whereType<EnemyManager>().isNotEmpty ?? false) {
+      final enemyManager =
+          flock!.gameRef.children.whereType<EnemyManager>().first;
+      checkCollisionWithEnemies(enemyManager.getEnemies());
+    }
   }
 
   // 周囲のボイドを取得
@@ -120,5 +129,24 @@ class Boid extends PositionComponent with HasGameRef {
       velocity.y = -velocity.y; // 垂直方向の速度を反転
       position.y = position.y.clamp(radius, screenSize.y - radius); // 画面内に戻す
     }
+  }
+
+  void checkCollisionWithEnemies(List<Enemy> enemies) {
+    for (final enemy in enemies) {
+      final distance = position.distanceTo(enemy.position);
+      const combinedRadius = radius + Enemy.radius;
+
+      if (distance < combinedRadius) {
+        // 衝突処理を実行
+        onCollisionWithEnemy(enemy);
+        return; // 一度の衝突で処理を終える
+      }
+    }
+  }
+
+  void onCollisionWithEnemy(Enemy enemy) {
+    // 衝突時の処理
+    print("Boid collided with an enemy!");
+    removeFromParent(); // ボイドを削除
   }
 }
