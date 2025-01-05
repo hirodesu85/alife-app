@@ -1,6 +1,6 @@
 import 'dart:math';
 import 'package:alife_app/components/boid_flock.dart';
-import 'package:alife_app/components/enemy.dart';
+import 'package:alife_app/components/enemies/base_enemy.dart';
 import 'package:alife_app/components/enemy_manager.dart';
 import 'package:flame/components.dart';
 import 'package:flutter/painting.dart';
@@ -131,10 +131,10 @@ class Boid extends PositionComponent with HasGameRef {
     }
   }
 
-  void checkCollisionWithEnemies(List<Enemy> enemies) {
+  void checkCollisionWithEnemies(List<BaseEnemy> enemies) {
     for (final enemy in enemies) {
       final distance = position.distanceTo(enemy.position);
-      const combinedRadius = radius + Enemy.radius;
+      final combinedRadius = radius + enemy.baseRadius;
 
       if (distance < combinedRadius) {
         removeFromParent();

@@ -1,9 +1,10 @@
+import 'package:alife_app/components/enemies/base_enemy.dart';
+import 'package:alife_app/components/enemies/enemy_factory.dart';
 import 'package:flame/components.dart';
-import 'enemy.dart';
 import 'dart:math';
 
 class EnemyManager extends Component with HasGameRef {
-  final List<Enemy> enemies = [];
+  final List<BaseEnemy> enemies = [];
   final Random random = Random();
 
   void spawnEnemy(Vector2 screenSize) {
@@ -11,7 +12,7 @@ class EnemyManager extends Component with HasGameRef {
       random.nextDouble() * screenSize.x,
       random.nextDouble() * screenSize.y,
     );
-    final enemy = Enemy(initialPosition: position);
+    final enemy = EnemyFactory.createEnemy('random', position);
     enemies.add(enemy);
     add(enemy);
   }
@@ -22,8 +23,8 @@ class EnemyManager extends Component with HasGameRef {
     }
   }
 
-  List<Enemy> getEnemies() {
-    return children.whereType<Enemy>().toList();
+  List<BaseEnemy> getEnemies() {
+    return children.whereType<BaseEnemy>().toList();
   }
 
   @override
